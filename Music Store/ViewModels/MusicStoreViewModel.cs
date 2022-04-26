@@ -44,10 +44,13 @@ namespace Music_Store.ViewModels
 
         public MusicStoreViewModel()
         {
-            BuyMusicCommand = ReactiveCommand.Create(() =>
-            {
-                return SelectedAlbum;
-            });
+            var buyButtonEnabled = this.WhenAnyValue<MusicStoreViewModel, bool, AlbumViewModel?>(
+                x => x.SelectedAlbum,
+                x => x != null);
+
+            BuyMusicCommand = ReactiveCommand.Create(
+                () => SelectedAlbum,
+                buyButtonEnabled);
 
             this.WhenAnyValue(x => x.SearchText)
                 .Throttle(TimeSpan.FromMilliseconds(400))
